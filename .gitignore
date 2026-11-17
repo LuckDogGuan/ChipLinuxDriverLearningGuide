@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+**/__pycache__/
+*.pyc
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+*.log
+build/
+dist/
+*.qcow2
+*.vmdk
+*.iso
