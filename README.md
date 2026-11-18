@@ -4,6 +4,23 @@
 
 **每周只维护笔记、周报、代码。** 点击课程学习，右侧“学习记录”可直接进入对应文件；进度表为可选总览。
 
+## 分支说明
+
+| 分支 | 用途 |
+| :--- | :--- |
+| [`main`](https://github.com/LuckDogGuan/ChipLinuxDriverLearningGuide/tree/main) | **个人学习与开发**：持续填写笔记、周报、代码，保存真实学习进度。 |
+| [`base`](https://github.com/LuckDogGuan/ChipLinuxDriverLearningGuide/tree/base) | **空白学习模板**：保留课程、导航和三件套框架，供复制使用；不要把 `main` 上填写的学习记录合并到这里。 |
+
+**开始一份独立的学习记录：** 从 `base` 复制，不直接在 `base` 上填写。
+
+```bash
+git clone --branch base --single-branch https://github.com/LuckDogGuan/ChipLinuxDriverLearningGuide.git ChipLinuxDriverLearningGuide-study
+cd ChipLinuxDriverLearningGuide-study
+git switch -c my-study
+```
+
+上述命令会在新目录创建一份以 `base` 为起点的学习分支；它仍关联原仓库。如果想发布到自己的新 GitHub 仓库，需另外更换 `origin` 地址。**`base` 不会自动跟随 `main` 更新**，以免把已填写的个人记录复制进模板。
+
 [▶ 从 W01 开始](02-每周计划/阶段A-C与用户态-W01-W10/W01-环境-数据表示-GDB-起步.md) · [40 周进度](01-进度核对/进度总表.md) · [原厂/官方资料](03-资料链接/一手资料阅读路线.md) · [可视化工具](03-资料链接/可视化学习地图.md)
 
 ## W01–W10 · C 与 Linux 用户态
