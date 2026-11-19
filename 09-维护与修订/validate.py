@@ -22,7 +22,7 @@ for n in range(1,41):
             errors.append(f'report W{n:02d} missing issue section')
         if '## 学习记录' not in pn.read_text(encoding='utf-8'):
             errors.append(f'note W{n:02d} missing learning section')
-        if not (ROOT/f'04-笔记/W{n:02d}/code/README.md').is_file():
+        if not (ROOT/f'code/w{n:02d}/README.md').is_file():
             errors.append(f'code W{n:02d} navigation missing')
 # Markdown links (path may contain spaces and parentheses - this is simple path check)
 for p in docs:

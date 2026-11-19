@@ -4,7 +4,10 @@ import re, subprocess, json
 R=Path(r'D:\VMShare\芯片底层软件40周')
 err=[]; warnings=[]; internal=0; tables=0
 def from_git(p):
-    return subprocess.check_output(['git','show','HEAD:'+p.relative_to(R).as_posix()],cwd=R).decode('utf-8-sig')
+    rel=p.relative_to(R).as_posix()
+    if rel.endswith('W21-认清链路-传感器-板卡-电脑.md'):
+        rel=rel.replace('W21-认清链路-传感器-板卡-电脑.md','W21-认清链路-传感器→板卡→电脑.md')
+    return subprocess.check_output(['git','show','HEAD:'+rel],cwd=R).decode('utf-8-sig')
 def where(p): return p.relative_to(R).as_posix()
 docs=list(R.rglob('*.md'))
 docs=[p for p in docs if p.name!='原手册-完整版.md' and '.git' not in p.parts and '.gitnexus' not in p.parts]
@@ -68,11 +71,11 @@ for n in range(1,41):
     for url in set(re.findall(r'https?://[^\s)\]]+',old)):
         if url not in new:err.append(f'lost lesson URL W{n:02d} {url}')
     if new.count('[← 课程目录]')!=1:err.append(f'weekly nav W{n:02d}')
-    for val in [f'W{n:02d}/note.md',f'W{n:02d}/report.md',f'W{n:02d}/code/']:
+    for val in [f'W{n:02d}/note.md',f'W{n:02d}/report.md',f'code/w{n:02d}/']:
         if val not in new:err.append(f'weekly link W{n:02d} {val}')
     d=R/'04-笔记'/f'W{n:02d}'
     for fn in ['note.md','report.md','code/README.md']:
-        t=(d/fn).read_text(encoding='utf-8')
+        t=((R/f'code/w{n:02d}/README.md') if fn=='code/README.md' else (d/fn)).read_text(encoding='utf-8')
         if '[课程目录]' not in t or '[本周课程]' not in t:err.append(f'record nav W{n:02d} {fn}')
         if len(t.splitlines())>15:err.append(f'record length W{n:02d} {fn}')
 archive=R/'00-总览与规则/原手册-完整版.md'

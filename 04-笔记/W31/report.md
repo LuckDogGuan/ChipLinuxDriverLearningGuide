@@ -1,6 +1,6 @@
 # W31 周报 · DMA
 
-[课程目录](../../README.md) · [本周课程](../../02-每周计划/阶段D-AArch64与PCI-DMA-W26-W32/W31-DMA.md) · [笔记](note.md) · [代码](code/)
+[课程目录](../../README.md) · [本周课程](../../02-每周计划/阶段D-AArch64与PCI-DMA-W26-W32/W31-DMA.md) · [笔记](note.md) · [代码](../../code/w31/)
 
 ## 本周完成
 

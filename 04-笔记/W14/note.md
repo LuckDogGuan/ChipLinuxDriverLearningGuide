@@ -1,6 +1,6 @@
 # W14 笔记 · 设备模型与 platform
 
-[课程目录](../../README.md) · [本周课程](../../02-每周计划/阶段B-BSP与驱动-W11-W20/W14-设备模型与-platform.md) · [周报](report.md) · [代码](code/)
+[课程目录](../../README.md) · [本周课程](../../02-每周计划/阶段B-BSP与驱动-W11-W20/W14-设备模型与-platform.md) · [周报](report.md) · [代码](../../code/w14/)
 
 ## 学习记录
 
