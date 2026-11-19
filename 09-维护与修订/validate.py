@@ -16,10 +16,14 @@ for n in range(1,41):
     matching=[p for p in weeks if p.name.startswith(f'W{n:02d}-')]
     if len(matching)==1:
         txt=matching[0].read_text(encoding='utf-8')
-        for t in ['本周深化与定位挑战','本周交付清单','D1','D6','调试','一手资料']:
+        for t in ['深化与故障定位','D1','D6','调试','一手资料']:
             if t not in txt: errors.append(f'W{n:02d} missing {t}')
-        if '2026-11-17 新增：本周根因定位卡' not in pr.read_text(encoding='utf-8'):
-            errors.append(f'report W{n:02d} missing debug card')
+        if '## 问题定位' not in pr.read_text(encoding='utf-8'):
+            errors.append(f'report W{n:02d} missing issue section')
+        if '## 学习记录' not in pn.read_text(encoding='utf-8'):
+            errors.append(f'note W{n:02d} missing learning section')
+        if not (ROOT/f'code/w{n:02d}/README.md').is_file():
+            errors.append(f'code W{n:02d} navigation missing')
 # Markdown links (path may contain spaces and parentheses - this is simple path check)
 for p in docs:
     raw=p.read_text(encoding='utf-8-sig')

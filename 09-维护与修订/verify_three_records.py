@@ -14,19 +14,19 @@ for p in docs:
         if not (p.parent/target).exists():issues.append(f'BROKEN: {p.relative_to(R)} -> {target}')
 for n in range(1,41):
     d=R/'04-笔记'/f'W{n:02d}'
-    files=[d/'note.md',d/'report.md',d/'code/README.md']
+    files=[d/'note.md',d/'report.md',R/f'code/w{n:02d}/README.md']
     if not all(p.is_file() for p in files):issues.append(f'W{n:02d}: missing record');continue
     a,b,c=[p.read_text(encoding='utf-8') for p in files]
     if len(a.splitlines())>12 or len(b.splitlines())>14 or len(c.splitlines())>8:issues.append(f'W{n:02d}: too long')
-    for p,s,needed in [(files[0],a,['[周报](report.md)','[代码](code/)','[本周课程]']), (files[1],b,['[笔记](note.md)','[代码](code/)','[本周课程]']), (files[2],c,['[笔记](../note.md)','[周报](../report.md)','[本周课程]'])]:
+    for p,s,needed in [(files[0],a,[f'[周报](report.md)',f'[代码](../../code/w{n:02d}/)','[本周课程]']), (files[1],b,[f'[笔记](note.md)',f'[代码](../../code/w{n:02d}/)','[本周课程]']), (files[2],c,[f'[笔记](../../04-笔记/W{n:02d}/note.md)',f'[周报](../../04-笔记/W{n:02d}/report.md)','[本周课程]'])]:
         if any(x not in s for x in needed):issues.append(f'{p}: backlink missing')
         else:record_links+=len(needed)
-    if (d/'code/.gitkeep').exists():issues.append(f'W{n:02d}: obsolete code gitkeep')
+    if (R/f'code/w{n:02d}/.gitkeep').exists():issues.append(f'W{n:02d}: obsolete code gitkeep')
     plan=list((R/'02-每周计划').rglob(f'W{n:02d}-*.md'))
-    if len(plan)!=1 or f'[代码](../../04-笔记/W{n:02d}/code/)' not in plan[0].read_text(encoding='utf-8'):
+    if len(plan)!=1 or f'[代码](../../code/w{n:02d}/)' not in plan[0].read_text(encoding='utf-8'):
         issues.append(f'W{n:02d}: plan code link missing')
     for f in [R/'README.md',R/'01-进度核对/进度总表.md']:
-        if f'[代码](' not in f.read_text(encoding='utf-8') or f'W{n:02d}/code/' not in f.read_text(encoding='utf-8'):
+        if f'[代码](' not in f.read_text(encoding='utf-8') or f'code/w{n:02d}/' not in f.read_text(encoding='utf-8'):
             issues.append(f'{f.name}: week {n} code link missing')
 # Ensure all planned lessons still present and no original full manual edits
 old=subprocess.check_output(['git','show','HEAD:00-总览与规则/原手册-完整版.md'],cwd=R)
