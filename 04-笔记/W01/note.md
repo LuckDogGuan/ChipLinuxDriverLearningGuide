@@ -92,6 +92,37 @@ windows插件
 
 1. 浮点数不能像整数一样精确表示所有十进制小数，例如 `0.1` 往往不能被二进制浮点精确表示。  
 所以比较浮点数时，通常不能直接 `a == b`，而是要比较误差范围。
+~~~C
+/// 比较范围这对吗？？？
+int numberCheck(float number){
+    if(number>0){
+        return 1;
+    }else if(number==0){
+        return 0;
+    }
+    return -1;
+}
+
+/// number 是 float ,表示的数不是很精确
+/// 1.0f / 3.0f = 0.3333 3循环。
+/// 实际的收到类型范围的影响
+/// float 1/3 = 0.333333
+/// float 1/3 *3 = 0.99999999，永远都不能等于1.
+/// 所以我们需要判断小于某一个范围就表示数据接近了。
+
+// 误差范围 float 7位，
+#defint EPSILON 1e-6f // 0.000001
+int nunberCheck(float number){
+    if(number>EPSILON){
+        return 1;
+    }else if(number<-EPSILON){
+        return -1;
+    }
+    return 0;
+}
+
+~~~
+
 2. 一般Linux内核中不适用浮点数据，一般 会保存为整数，后续会通过转换来读取,如果有FPU(Floating Point Unit) 还是能直接进行计算的，但是还会有调度开销，所以一般会避免。
 3. stm32 单片机中，会先放大对应的数据，后续计算完成又缩小对应的数据  `定点数表示`,统一存储格式，以及精度。
 
@@ -160,6 +191,21 @@ windows插件
 #### 6. 布尔类型与 `void`
 
 - `_Bool` 是 C99 引入的布尔类型。在 C99 到 C17 中，引入 `<stdbool.h>` 后可写 `bool ready = true;`。转换到布尔类型时，零变为假，非零变为真。
+~~~c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+void main(){
+    bool status =true;
+    printf("status = %d\r\n",status);
+}
+~~~
+
+~~~
+gcc boolTest.c -o boolTest && ./boolTest
+~~~
+
 - `void` 表示没有值。例如 `void reset(void)` 表示函数无返回值且不接收参数。
 - `void *` 是通用对象指针，例如 `malloc` 返回的指针。访问所指对象时要使用对应类型的指针。
 
@@ -195,7 +241,7 @@ int main(void)
 gcc -std=c11 -Wall -Wextra -pedantic types.c -o types && ./types
 ```
 
-### 进制转换
+#### 8. 进制转换
 
 > 要点
 
@@ -209,6 +255,8 @@ gcc -std=c11 -Wall -Wextra -pedantic types.c -o types && ./types
 // 0 开头是8进制
 // 0x 是16进制
 ~~~
+
+### char , 0 ,以及常见的错误。
 
 
 ## 疑问与资料
