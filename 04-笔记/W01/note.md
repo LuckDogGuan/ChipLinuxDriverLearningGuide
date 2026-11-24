@@ -256,7 +256,100 @@ gcc -std=c11 -Wall -Wextra -pedantic types.c -o types && ./types
 // 0x 是16进制
 ~~~
 
-### char , 0 ,以及常见的错误。
+#### 9. 不同 0 值：整数、字符、字符串和 NUL
 
+| 写法 | 含义 | C 表达式类型 | sizeof（本机） | 数值或字节内容 |
+|---|---|---|---:|---|
+| `0` | 整数零 | `int` | 4 | 0 |
+| `'0'` | 数字字符零 | `int` | 4 | 48（ASCII 0x30） |
+| `"0"` | 字符串 | `char[2]` | 2 | 30 00（HEX） |
+| `'\0'` | 空字符 NUL | `int` | 4 | 0（0x00） |
+
+> C 中普通字符常量是 int 类型，赋给 char 变量后只占 1 字节。单独的 `\0` 不是合法表达式。
+
+```c
+int a = 0;          // 4 字节（本机）
+char b = '0';       // 1 字节，0x30
+char c[] = "0";     // 2 字节，0x30 0x00
+char d = '\0';      // 1 字节，0x00
+```
+
+| 表达式 | 结果 |
+|---|---:|
+| `0 == '\0'` | 1 |
+| `0 == '0'` | 0 |
+| `'5' - '0'` | 5 |
+| `sizeof("0")` | 2 |
+| `strlen("0")` | 1 |
+| `sizeof("")` | 1 |
+| `strlen("")` | 0 |
+
+**字符串结束符与数组长度：**
+
+```c
+char str[] = {'A', '\0', 'B', '\0'};
+printf("%s\n", str);               // A
+printf("%zu\n", sizeof(str));      // 4
+printf("%zu\n", strlen(str));      // 1
+```
+
+`sizeof` 得到此数组的字节数，`strlen` 统计第一个 NUL 之前的字符数，不包含结束符。对没有 NUL 结尾的数组调用 strlen 可能导致越界读取。数组作为函数参数时会调整为指针，不能再用 sizeof 得到原数组长度。
+
+**嵌入式应用：** 串口二进制帧 `{0xAA, 0x00, 0x30, 0xFF}` 长度为 4 字节，不能用 strlen 计算帧长度，应使用明确的长度参数。发送单字节 0 得到 00，发送字符 '0' 得到 30。
+
+实验：[zeroCheck.c](../../code/w01/D2/zeroCheck.c)
+
+```bash
+cd ~/mycode/ChipLinuxDriverLearningGuide/code/w01/D2
+gcc -std=c11 -Wall -Wextra zeroCheck.c -o /tmp/zeroCheck && /tmp/zeroCheck
+```
+
+#### 10. 浮点数比较与 EPSILON
+
+| 类型 | 常见大小 | 有效十进制数字（约） | 1 附近的机器精度 |
+|---|---:|---:|---:|
+| float | 4 字节 | 6–7 | 1.192e-7 |
+| double | 8 字节 | 15–16 | 2.220e-16 |
+
+机器精度不等于业务允许误差。EPSILON 需要根据计算过程和实际需求选择。
+
+```c
+#define EPSILON 1e-6f
+
+int numberCheck(float number){
+    if(number > 0) return 1;
+    if(number == 0) return 0;
+    return -1;
+}
+
+int numberCheckFloat(float number){
+    if(number > EPSILON) return 1;
+    if(number < -EPSILON) return -1;
+    return 0;
+}
+```
+
+以上函数用于有限浮点数。NaN 需要单独处理（isnan）。`=` 是赋值，`==` 是比较。
+
+本机 GCC 实测：`float number = 0.3f - 0.2f - 0.1f;`，数学结果为 0，实际为 `0.000000007450581`。
+
+| 输入 | 直接比较 | 范围比较 |
+|---:|---:|---:|
+| -2e-6f | -1 | -1 |
+| -1e-6f | -1 | 0 |
+| -1e-7f | -1 | 0 |
+| 0 | 0 | 0 |
+| 1e-7f | 1 | 0 |
+| 1e-6f | 1 | 0 |
+| 2e-6f | 1 | 1 |
+
+整数除法 `1 / 3` 得到 0；浮点除法 `1.0f / 3.0f` 约为 0.33333334，乘以 3.0f 可能恰好舍入为 1.0f。
+
+实验：[floatCheck.c](../../code/w01/D2/floatCheck.c)
+
+```bash
+cd ~/mycode/ChipLinuxDriverLearningGuide/code/w01/D2
+gcc -Wall -Wextra floatCheck.c -o /tmp/floatCheck && /tmp/floatCheck
+```
 
 ## 疑问与资料
